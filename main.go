@@ -62,14 +62,13 @@ func (cmd Cmd) Run() error {
 		ClientID string `url:"c"`
 	}{"json", cmd.User, cmd.Password, clientID}
 
-	_, err := sling.New().Get(siteUrl).
+	_, err := sling.New().Post(siteUrl).
 		Set("User-Agent", userAgent).
-		QueryStruct(params).
+		BodyForm(params).
 		ReceiveSuccess(&subResp)
 	if err != nil {
 		return err
 	}
-
 	if cmd.Output == "" {
 		for idx := range subResp.Response.Starred["song"] {
 			song := subResp.Response.Starred["song"][idx]
