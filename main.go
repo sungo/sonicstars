@@ -60,7 +60,8 @@ func (cmd Cmd) Run() error {
 		User     string `url:"u"`
 		Password string `url:"p"`
 		ClientID string `url:"c"`
-	}{"json", cmd.User, cmd.Password, clientID}
+		Version  string `url:"v"`
+	}{"json", cmd.User, cmd.Password, clientID, "1.16.1"}
 
 	_, err := sling.New().Post(siteUrl).
 		Set("User-Agent", userAgent).
