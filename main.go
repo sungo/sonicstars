@@ -26,12 +26,18 @@ type (
 	}
 	Songs []Song
 
+	SubsonicError struct {
+		Code    int    `json:"code"`
+		Message string `json:"message"`
+	}
+
 	SubsonicResponse struct {
 		Status        string           `json:"status"`
 		Version       string           `json:"version"`
 		Type          string           `json:"type"`
 		ServerVersion string           `json:"serverVersion"`
 		Starred       map[string]Songs `json:"starred"`
+		Err           SubsonicError    `json:"error"`
 	}
 
 	SubsonicResponseWrapper struct {
@@ -69,6 +75,9 @@ func (cmd Cmd) Run() error {
 		ReceiveSuccess(&subResp)
 	if err != nil {
 		return err
+	}
+	if subResp.Response.Status != "ok" {
+		return fmt.Errorf("an API error occurred: code %d ; %s", subResp.Response.Err.Code, subResp.Response.Err.Message)
 	}
 	if cmd.Output == "" {
 		for idx := range subResp.Response.Starred["song"] {
